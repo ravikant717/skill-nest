@@ -4,11 +4,11 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 
 import AuthPasswordInput from "../../components/auth/AuthPasswordInput";
-import OAuthButton from "../../components/auth/OAuthButton";
-import Divider from "../../components/auth/Divider";
+import OAuthButton from "../../components/auth/OAuthButtons.jsx";
+import Divider from "../../components/auth/AuthDivider.jsx";
 
 import { login } from "../../api/auth.api.js";
-import { loginSchema } from "../../validation/loginSchema.js";
+import { loginSchema } from "../../validations/loginSchema.js";
 
 export default function Login() {
   const navigate = useNavigate();

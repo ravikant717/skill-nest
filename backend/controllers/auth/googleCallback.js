@@ -1,31 +1,38 @@
-import { handleGoogleOAuth } from "./passwordGlogin.js";
 import { issueAuthCookie } from "../../utils/jwt.js";
 import { env } from "../../config/env.js";
+import User from "../../models/user.js";
 
-/**
- * GOOGLE OAUTH CALLBACK CONTROLLER
- * GET /api/auth/google/callback
- */
 export const googleCallback = async (req, res) => {
   try {
-    // 🔐 Passport must attach user
     if (!req.user) {
       return res.redirect(`${env.CLIENT_URL}/login`);
     }
 
-    const result = await handleGoogleOAuth(req.user);
+    const role = req.session.oauthRole;
 
-    // OAuth user must set password
-    if (result.requiresPassword) {
-      return res.redirect(
-        `${env.CLIENT_URL}/set-password?token=${result.token}`
-      );
+    if (!role) {
+      return res.redirect(`${env.CLIENT_URL}/login`);
     }
 
-    // Normal OAuth login
-    issueAuthCookie(res, result.userId);
+    // Ensure role is set (first-time OAuth)
+    if (!req.user.role) {
+      req.user.role = role;
+      await req.user.save();
+    }
 
-    return res.redirect(`${env.CLIENT_URL}/dashboard`);
+    // Issue auth cookie / JWT
+    issueAuthCookie(res, {
+      id: req.user._id,
+      role: req.user.role,
+    });
+
+    // Role-based redirect
+    const redirectPath =
+      req.user.role === "educator"
+        ? "/educator/dashboard"
+        : "/student/dashboard";
+
+    return res.redirect(`${env.CLIENT_URL}${redirectPath}`);
   } catch (err) {
     console.error("Google OAuth error:", err);
     return res.redirect(`${env.CLIENT_URL}/login`);

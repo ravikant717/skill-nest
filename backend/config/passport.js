@@ -1,15 +1,8 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-
 import User from "../models/user.js";
 import { env } from "./env.js";
 
-/**
- * Google OAuth Strategy
- * - Used ONLY to verify identity
- * - We DO NOT store Google tokens
- * - We issue our own JWT after this
- */
 passport.use(
   new GoogleStrategy(
     {
@@ -28,21 +21,19 @@ passport.use(
 
         let user = await User.findOne({ email });
 
-        // First-time OAuth user
+        // Create new OAuth user
         if (!user) {
           user = await User.create({
             name,
             email,
-            authProvider: "google",
-            emailVerified: true,   // Google already verified email
-            passwordSet: false,    // force password setup
+            role: profile._json?.role || null, // temp, overwritten later
+            isVerified: true,
           });
         }
 
-        // Existing user (OAuth or linked)
         return done(null, user);
-      } catch (error) {
-        return done(error, null);
+      } catch (err) {
+        return done(err, null);
       }
     }
   )

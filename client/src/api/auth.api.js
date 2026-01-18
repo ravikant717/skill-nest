@@ -8,3 +8,9 @@ export const login = (data) =>
 
 export const verifyEmail = (data) =>
   axios.post("/auth/verify-email", data);
+
+export const forgotPassword = (data) =>
+  axios.post("/auth/forgot-password", data);
+
+export const resendVerification = (email) =>
+  axios.post("/auth/resend-verification", { email });

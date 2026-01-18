@@ -6,35 +6,49 @@ import { env } from "../../config/env.js";
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
-    if (!name || !email || !password) {
+    // 1️⃣ Validate input
+    if (!name || !email || !password || !role) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (await User.findOne({ email })) {
+    if (!["student", "educator"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    // 2️⃣ Check existing user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(409).json({ message: "Email already registered" });
     }
 
+    // 3️⃣ Create user
     const user = await User.create({
       name,
       email,
       password: await hashPassword(password),
-      passwordSet: true,
-      emailVerified: false,
+      role,
+      isVerified: false,
     });
 
-    const token = signToken({ id: user._id }, "15m");
+    // 4️⃣ Create verification token
+    const token = signToken(
+      { id: user._id, email: user.email },
+      "15m"
+    );
 
+    // 5️⃣ Send verification email
     await sendEmail({
       to: email,
       subject: "Verify your email",
       template: "verifyEmail.html",
       variables: {
-        link: `${env.CLIENT_URL}/verify-email/callback?token=${token}`,
+        link: `${env.CLIENT_URL}/verify-email?token=${token}`,
       },
     });
 
+    // 6️⃣ Response
     return res.status(201).json({
       message: "Registration successful. Please verify your email.",
     });
