@@ -1,8 +1,15 @@
 import React from 'react'
 import './App.css'
+import AppRoutes from './Routes'
+import { BrowserRouter } from 'react-router-dom'
+
 const App = () => {
   return (
-    <div className='text-blue-400'>App</div>
+    <BrowserRouter>
+     <AppRoutes></AppRoutes>
+  </BrowserRouter>
+    
+  
   )
 }
 
