@@ -1,6 +1,7 @@
 import { issueAuthCookie } from "../../utils/jwt.js";
 import { env } from "../../config/env.js";
 import User from "../../models/user.js";
+import { upsertStreamUser } from "../../config/stream.js";
 
 export const googleCallback = async (req, res) => {
   try {
@@ -19,6 +20,17 @@ export const googleCallback = async (req, res) => {
       req.user.role = role;
       await req.user.save();
     }
+
+    // Upsert Stream user
+    await upsertStreamUser({
+      id: req.user._id.toString(),
+      name: req.user.name,
+      email: req.user.email,
+      custom: {
+        role: req.user.role,
+        isVerified: req.user.isVerified,
+      },
+    });
 
     // Issue auth cookie / JWT
     issueAuthCookie(res, {

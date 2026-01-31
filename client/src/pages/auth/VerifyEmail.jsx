@@ -1,13 +1,27 @@
 import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { resendVerification } from "../../api/auth.api";
 
 export default function VerifyEmail() {
   const [params] = useSearchParams();
   const email = params.get("email");
+  const success = params.get("success");
+  const error = params.get("error");
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (success) {
+      setMessage("✓ Email verified successfully! You can now log in.");
+    } else if (error) {
+      const errorMessages = {
+        missing_token: "Verification link is missing the token.",
+        invalid_token: "Invalid or expired verification link. Please request a new one.",
+      };
+      setMessage(errorMessages[error] || "Verification failed. Please try again.");
+    }
+  }, [success, error]);
 
   const handleResend = async () => {
     if (!email) return;

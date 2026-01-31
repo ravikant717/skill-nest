@@ -10,15 +10,22 @@ export default function VerifyEmailCallback() {
   useEffect(() => {
     const verify = async () => {
       try {
-        await api.get(`/auth/verify-email?token=${token}`);
+        const response = await api.get(`/auth/verify-email?token=${token}`);
+        if (response.data.success) {
+          navigate("/login", {
+            replace: true,
+            state: { verified: true, message: response.data.message },
+          });
+        } else {
+          navigate("/login", {
+            replace: true,
+            state: { verified: false, message: response.data.message },
+          });
+        }
+      } catch (error) {
         navigate("/login", {
           replace: true,
-          state: { verified: true },
-        });
-      } catch {
-        navigate("/login", {
-          replace: true,
-          state: { verified: false },
+          state: { verified: false, message: error.response?.data?.message || "Verification failed" },
         });
       }
     };

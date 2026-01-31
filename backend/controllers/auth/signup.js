@@ -3,6 +3,7 @@ import { hashPassword } from "../../utils/hash.js";
 import { signToken } from "../../utils/jwt.js";
 import { sendEmail } from "../../utils/mailer.js";
 import { env } from "../../config/env.js";
+import { upsertStreamUser } from "../../config/stream.js";
 
 export const register = async (req, res) => {
   try {
@@ -32,11 +33,19 @@ export const register = async (req, res) => {
       isVerified: false,
     });
 
+    // 3️⃣.5️⃣ Create Stream user
+    await upsertStreamUser({
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      custom: {
+        role: user.role,
+        isVerified: user.isVerified,
+      },
+    });
+
     // 4️⃣ Create verification token
-    const token = signToken(
-      { id: user._id, email: user.email },
-      "15m"
-    );
+    const token = signToken({ id: user._id, email: user.email }, "15m");
 
     // 5️⃣ Send verification email
     await sendEmail({
@@ -44,7 +53,7 @@ export const register = async (req, res) => {
       subject: "Verify your email",
       template: "verifyEmail.html",
       variables: {
-        link: `${env.CLIENT_URL}/verify-email?token=${token}`,
+        link: `${env.CLIENT_URL}/verify-email/callback?token=${token}`,
       },
     });
 

@@ -45,10 +45,7 @@ export const login = async (req, res) => {
     }
 
     // 6️⃣ Issue auth cookie / token
-    issueAuthCookie(res, {
-      id: user._id,
-      role: user.role,
-    });
+    issueAuthCookie(res, user._id);
 
     // 7️⃣ Respond
     return res.status(200).json({
