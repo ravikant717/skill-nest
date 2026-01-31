@@ -23,7 +23,7 @@ router.get(
 );
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", { failureRedirect: `${process.env.CLIENT_URL}/login` }),
   googleCallback,
 );
 router.post("/resend-verification", resendVerification);
