@@ -7,6 +7,7 @@ export const verifyEmail = async (req, res) => {
 
     if (!token) {
       return res.status(400).json({
+        success: false,
         message: "Verification token is missing",
       });
     }
@@ -14,16 +15,18 @@ export const verifyEmail = async (req, res) => {
     const payload = verifyToken(token);
 
     await User.findByIdAndUpdate(payload.id, {
-      emailVerified: true,
+      isVerified: true,
     });
 
     return res.status(200).json({
+      success: true,
       message: "Email verified successfully",
     });
   } catch (err) {
     console.error("VERIFY EMAIL ERROR:", err);
 
     return res.status(400).json({
+      success: false,
       message: "Invalid or expired verification link",
     });
   }

@@ -14,11 +14,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async ({ to, subject, template, variables }) => {
-  const templatePath = path.join(
-    process.cwd(),
-    "src/templates",
-    template
-  );
+  const templatePath = path.join(process.cwd(), "template", template);
 
   let html = fs.readFileSync(templatePath, "utf-8");
 
