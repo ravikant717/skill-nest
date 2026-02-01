@@ -32,9 +32,39 @@ import "../styles/stream-chat.css";
 
 import StreamChatSidebar from "../components/stream/StreamChatSidebar";
 import StreamChatToggle from "../components/stream/StreamChatToggle";
-import DebugInfo from "../components/stream/DebugInfo";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
+
+// Lazy load DebugInfo only in development to exclude from production bundle
+const DebugInfoWrapper = ({ callId, user, client, call, chatClient, chatChannel, isConnecting, streamApiKey }) => {
+  const [DebugInfo, setDebugInfo] = useState(null);
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      import("../components/stream/DebugInfo").then((module) => {
+        setDebugInfo(() => module.default);
+      });
+    }
+  }, []);
+
+  if (!DebugInfo) return null;
+
+  return (
+    <DebugInfo 
+      title="StreamPage State" 
+      data={{
+        callId,
+        hasUser: !!user,
+        hasClient: !!client,
+        hasCall: !!call,
+        hasChatClient: !!chatClient,
+        hasChatChannel: !!chatChannel,
+        isConnecting,
+        hasStreamKey: !!streamApiKey
+      }}
+    />
+  );
+};
 
 const StreamPage = () => {
   const { id: callId } = useParams();
@@ -140,19 +170,18 @@ const StreamPage = () => {
 
   return (
     <div className="stream-page-container">
-      <DebugInfo 
-        title="StreamPage State" 
-        data={{
-          callId,
-          hasUser: !!user,
-          hasClient: !!client,
-          hasCall: !!call,
-          hasChatClient: !!chatClient,
-          hasChatChannel: !!chatChannel,
-          isConnecting,
-          hasStreamKey: !!STREAM_API_KEY
-        }}
-      />
+      {import.meta.env.DEV && (
+        <DebugInfoWrapper 
+          callId={callId}
+          user={user}
+          client={client}
+          call={call}
+          chatClient={chatClient}
+          chatChannel={chatChannel}
+          isConnecting={isConnecting}
+          streamApiKey={STREAM_API_KEY}
+        />
+      )}
       
       <div className="stream-video-wrapper">
         <StreamVideo client={client}>
