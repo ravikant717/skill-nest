@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const fetchUser = useCallback(async () => {
+  const refetchUser = useCallback(async () => {
     try {
       const res = await api.get("/auth/me");
       setUser(res.data.user);
@@ -22,13 +22,9 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const refetchUser = useCallback(async () => {
-    await fetchUser();
-  }, [fetchUser]);
-
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    refetchUser();
+  }, [refetchUser]);
 
   return (
     <AuthContext.Provider value={{ user, isLoaded, refetchUser }}>
