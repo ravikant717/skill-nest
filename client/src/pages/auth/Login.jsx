@@ -35,7 +35,12 @@ export default function Login() {
       const res = await login(data);
 
       // Refetch user to update AuthContext
-      await refetchUser();
+      try {
+        await refetchUser();
+      } catch (refetchErr) {
+        // Log refetch errors but do not block navigation
+        console.error("Failed to refetch user after login", refetchErr);
+      }
 
       // ✅ ROLE-BASED REDIRECT
       if (res.data.user.role === "educator") {
