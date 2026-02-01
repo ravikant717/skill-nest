@@ -105,7 +105,7 @@ const StreamPage = () => {
     };
 
     initCall();
-  }, [tokenData, user, callId]);
+  }, [tokenData, user, callId, STREAM_API_KEY]);
 
   // Cleanup call on unmount
   useEffect(() => {
