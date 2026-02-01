@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { StreamChat } from "stream-chat";
 import { useUser } from "../context/useUser";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 export const useStreamChat = () => {
   const { user } = useUser();
   const [chatClient, setChatClient] = useState(null);
+  const clientSetRef = useRef(false);
 
   // Fetch stream token using react-query
   const {
@@ -31,7 +32,6 @@ export const useStreamChat = () => {
 
     const client = StreamChat.getInstance(STREAM_API_KEY);
     let cancelled = false;
-    let connected = false;
 
     const userName = user.fullName || user.name || user.email || user.id;
     const userImage = user.imageUrl || undefined;
@@ -48,7 +48,7 @@ export const useStreamChat = () => {
         );
         if (!cancelled) {
           setChatClient(client);
-          connected = true;
+          clientSetRef.current = true;
         }
       } catch (error) {
         console.log("Error connecting to stream chat", error);
@@ -61,8 +61,9 @@ export const useStreamChat = () => {
     return () => {
       cancelled = true;
       // Only disconnect if we successfully connected and set the client state
-      if (connected) {
+      if (clientSetRef.current) {
         client.disconnectUser().catch(console.error);
+        clientSetRef.current = false;
       }
     };
   }, [
