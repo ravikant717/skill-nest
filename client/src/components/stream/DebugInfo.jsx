@@ -12,7 +12,7 @@ const DebugInfo = ({ title, data }) => {
       borderRadius: "5px",
       fontSize: "12px",
       maxWidth: "300px",
-      zIndex: 9999
+      zIndex: 1000
     }}>
       <strong>{title}:</strong>
       <pre style={{ fontSize: "10px", marginTop: "5px" }}>
