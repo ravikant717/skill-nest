@@ -36,7 +36,7 @@ import StreamChatToggle from "../components/stream/StreamChatToggle";
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
 // Lazy load DebugInfo only in development to exclude from production bundle
-const DebugInfoWrapper = ({ callId, user, client, call, chatClient, chatChannel, isConnecting, streamKey }) => {
+const DebugInfoWrapper = ({ callId, user, client, call, chatClient, chatChannel, isConnecting, streamApiKey }) => {
   const [DebugInfo, setDebugInfo] = useState(null);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const DebugInfoWrapper = ({ callId, user, client, call, chatClient, chatChannel,
         hasChatClient: !!chatClient,
         hasChatChannel: !!chatChannel,
         isConnecting,
-        hasStreamKey: !!streamKey
+        hasStreamKey: !!streamApiKey
       }}
     />
   );
@@ -179,7 +179,7 @@ const StreamPage = () => {
           chatClient={chatClient}
           chatChannel={chatChannel}
           isConnecting={isConnecting}
-          streamKey={STREAM_API_KEY}
+          streamApiKey={STREAM_API_KEY}
         />
       )}
       
