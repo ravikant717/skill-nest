@@ -46,8 +46,14 @@ const StreamPage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatChannel, setChatChannel] = useState(null);
 
-  const { chatClient } = useStreamChat();
+  const { chatClient, error: chatError } = useStreamChat();
 
+  useEffect(() => {
+    if (!chatError) return;
+
+    console.error("Error initializing chat client:", chatError);
+    toast.error("Unable to initialize chat. Chat will be unavailable.");
+  }, [chatError]);
   const { data: tokenData } = useQuery({
     queryKey: ["streamToken"],
     queryFn: getStreamToken,
