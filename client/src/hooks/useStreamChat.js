@@ -47,8 +47,8 @@ export const useStreamChat = () => {
           tokenData.token,
         );
         if (!cancelled) {
-          connected = true;
           setChatClient(client);
+          connected = true;
         }
       } catch (error) {
         console.log("Error connecting to stream chat", error);
