@@ -31,6 +31,7 @@ export const useStreamChat = () => {
 
     const client = StreamChat.getInstance(STREAM_API_KEY);
     let cancelled = false;
+    let connected = false;
 
     const userName = user.fullName || user.name || user.email || user.id;
     const userImage = user.imageUrl || undefined;
@@ -46,6 +47,7 @@ export const useStreamChat = () => {
           tokenData.token,
         );
         if (!cancelled) {
+          connected = true;
           setChatClient(client);
         }
       } catch (error) {
@@ -58,7 +60,8 @@ export const useStreamChat = () => {
     // Cleanup
     return () => {
       cancelled = true;
-      if (client) {
+      // Only disconnect if we successfully connected and set the client state
+      if (connected) {
         client.disconnectUser().catch(console.error);
       }
     };
