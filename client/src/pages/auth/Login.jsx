@@ -9,11 +9,13 @@ import Divider from "../../components/auth/AuthDivider.jsx";
 
 import { login } from "../../api/auth.api.js";
 import { loginSchema } from "../../validations/loginSchema.js";
+import { useUser } from "../../context/useUser.js";
 
 export default function Login() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const role = params.get("role"); // student | educator
+  const { refetchUser } = useUser();
 
   // 🚨 Guard: role must exist
   useEffect(() => {
@@ -31,6 +33,14 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       const res = await login(data);
+
+      // Refetch user to update AuthContext
+      try {
+        await refetchUser();
+      } catch (refetchErr) {
+        // Log refetch errors but do not block navigation
+        console.error("Failed to refetch user after login", refetchErr);
+      }
 
       // ✅ ROLE-BASED REDIRECT
       if (res.data.user.role === "educator") {

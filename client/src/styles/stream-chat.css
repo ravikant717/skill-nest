@@ -1,0 +1,226 @@
+/* Stream Page Layout */
+.stream-page-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #0f172a;
+  position: relative;
+  overflow: hidden;
+}
+
+.stream-video-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0;
+  background-color: #0f172a;
+}
+
+/* Ensure Stream Video components fill the space */
+.stream-video-wrapper .str-video,
+.stream-video-wrapper .str-video__call {
+  height: 100%;
+  width: 100%;
+}
+
+/* Chat Toggle Button */
+.stream-chat-toggle-wrapper {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.stream-chat-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(59, 130, 246, 0.9);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.stream-chat-toggle-btn:hover {
+  background: rgba(37, 99, 235, 1);
+  transform: scale(1.05);
+}
+
+.stream-chat-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.stream-chat-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0 6px;
+  border: 2px solid #0f172a;
+}
+
+/* Chat Sidebar */
+.stream-chat-sidebar {
+  width: 380px;
+  height: 100vh;
+  background: #1e293b;
+  border-left: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.stream-chat-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background: #0f172a;
+  border-bottom: 1px solid #334155;
+}
+
+.stream-chat-sidebar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.stream-chat-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stream-chat-close-btn:hover {
+  background: #334155;
+  color: white;
+}
+
+.stream-chat-sidebar-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stream Chat Component Overrides */
+.stream-chat-sidebar .str-chat {
+  height: 100%;
+}
+
+.stream-chat-sidebar .str-chat__container {
+  height: 100%;
+}
+
+.stream-chat-sidebar .str-chat__channel {
+  height: 100%;
+  background: transparent;
+}
+
+.stream-chat-sidebar .str-chat__main-panel {
+  padding: 0;
+}
+
+.stream-chat-sidebar .str-chat__list {
+  background: #1e293b;
+  padding: 16px;
+}
+
+.stream-chat-sidebar .str-chat__message-simple {
+  background: #0f172a;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.stream-chat-sidebar .str-chat__input-flat {
+  background: #0f172a;
+  border-top: 1px solid #334155;
+  padding: 16px;
+}
+
+.stream-chat-sidebar .str-chat__textarea textarea {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: white;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.stream-chat-sidebar .str-chat__textarea textarea:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.stream-chat-sidebar .str-chat__send-button {
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
+.stream-chat-sidebar .str-chat__send-button:hover {
+  background: #2563eb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stream-chat-sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .stream-chat-toggle-wrapper {
+    top: 10px;
+    right: 10px;
+  }
+
+  .stream-chat-toggle-btn {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stream-chat-sidebar {
+    max-width: 100%;
+  }
+}
