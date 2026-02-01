@@ -140,7 +140,7 @@ const StreamPage = () => {
   // Cleanup call on unmount
   useEffect(() => {
     return () => {
-      if (call) {
+      if (call && call.state.callingState !== CallingState.LEFT) {
         call.leave().catch(console.error);
       }
     };
